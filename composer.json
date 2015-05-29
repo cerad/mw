@@ -1,0 +1,19 @@
+{
+  "name": "cerad/mw",
+  "authors": [
+    {
+      "name": "ahundiak",
+      "email": "ahundiak@gmail.com"
+    }
+  ],
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/slimphp/Slim.git"
+    }
+  ],
+  "require": {
+    "php": ">=5.4.0",
+    "slim/slim": "dev-develop"
+  }
+}
