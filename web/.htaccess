@@ -1,0 +1,21 @@
+DirectoryIndex disabled
+
+RewriteEngine On
+
+# Serve existing files
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule .? - [L]
+
+# For / serve index.php if it exists
+# RewriteCond %{DOCUMENT_ROOT}/index\.php -f [NC]
+# RewriteRule ^/?$ index.php [L]
+
+# For / serve index.html if it exists
+# RewriteCond %{DOCUMENT_ROOT}/index\.html -f [NC]
+# RewriteRule ^/?$ index.html [L]
+
+# Note that index.php or index.html will kickoff if they exist
+
+# Otherwise use front controller
+RewriteRule .? app.php [L]
+
