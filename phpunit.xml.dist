@@ -10,6 +10,7 @@
   <testsuites>
     <testsuite name="Middleware Test Suit">
         <file>tests/CorsTest.php</file>
+        <file>tests/AppTest.php</file>
     </testsuite>
   </testsuites>
 </phpunit>
