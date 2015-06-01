@@ -46,6 +46,12 @@ class App extends Slim\App
     {
       $userRepo = $container['user_repository'];
       $users = $userRepo->findAll();
+      $usersx = json_encode($users);
+      
+      $response->getBody()->write($usersx);
+      $response = $response->withHeader('Content-Type','application/json; charset=utf-8');
+      
+      return $response;
       
       ob_start();
       require 'views/users.html.php';
