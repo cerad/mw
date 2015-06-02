@@ -4,6 +4,8 @@ error_reporting(E_ALL);
 require __DIR__  . '/../vendor/autoload.php';
 
 use Cerad\Component\Dbal\ConnectionFactory;
+use Cerad\Component\Cors\Cors;
+
 use Cerad\Module\UserModule\UserRepository;
 
 class App extends Slim\App
@@ -27,17 +29,27 @@ class App extends Slim\App
     {
       return new UserRepository($container['db_conn_tests']);
     };
+    $container['cors'] = function($container)
+    {
+      return new Cors();
+    };
   }
   protected function registerRoutes($container)
   {
     $router = $container['router'];
+    $cors   = $container['cors'];
     
-    $this->get('/',function($request,$response) use ($container)
+    $this->get('/users',function($request,$response) use ($container)
     {
-      ob_start();
-      require 'views/index.html.php';
-      return $response->getBody()->write(ob_get_clean());
-    });
+      $userRepo = $container['user_repository'];
+      $users  = $userRepo->findAll();
+      $usersx = json_encode($users);
+      
+      $response->getBody()->write($usersx);
+      $response = $response->withHeader('Content-Type','application/json; charset=utf-8');
+      
+      return $response;      
+    })->add($cors);
   }
 }
 $app = new App();

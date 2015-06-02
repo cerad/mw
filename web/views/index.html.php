@@ -10,7 +10,7 @@
       
       app.loadUsers = function(success,error) {
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', '/users', true);
+        xhr.open('GET', 'http://localhost:8001/users', true);
         xhr.responseType = 'json';
         xhr.onload = function() {
           var status = xhr.status;
@@ -45,7 +45,7 @@
         "'": '&#39;',
         "/": '&#x2F;'
       };
-      app.escape = function(string) { console.log('Esacpe ' + string);
+      app.escape = function(string) {
         return String(string).replace(/[&<>"'\/]/g, function (s) {
           return entityMap[s];
         });
