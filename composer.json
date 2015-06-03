@@ -7,8 +7,9 @@
     }
   ],
   "autoload": { "psr-4": { 
-    "Cerad\\Module\\":    "src",
-    "Cerad\\Component\\": "src"
+    "Cerad\\Module\\":     "src",
+    "Cerad\\Component\\":  "src",
+    "Cerad\\Middleware\\": "src"
   }},
   "require": {
     "php": ">=5.4.0",

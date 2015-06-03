@@ -3,14 +3,14 @@
     <title>Index</title>
   </head>
   <body>
-    <h3>Index Page</h3>
+    <h3>Index Page Route <?php echo $routeName; ?></h3>
     <div id="users" style="display:none">USERS</div>
     <script>
       var app = {};
       
       app.loadUsers = function(success,error) {
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'http://localhost:8001/users', true);
+        xhr.open('GET', 'http://localhost:8001/api/users', true);
         xhr.responseType = 'json';
         xhr.onload = function() {
           var status = xhr.status;

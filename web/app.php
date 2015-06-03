@@ -6,6 +6,8 @@ require __DIR__  . '/../vendor/autoload.php';
 use Cerad\Component\Dbal\ConnectionFactory;
 use Cerad\Module\UserModule\UserRepository;
 
+use Cerad\Middleware\RequestAttributes;
+
 class App extends Slim\App
 {
   public function __construct()
@@ -16,28 +18,36 @@ class App extends Slim\App
     
     $this->registerRoutes($this->getContainer());
   }
-  protected function registerServices($container)
+  protected function registerServices($dic)
   {
-    $container['db_url_tests']  = 'mysql://tests:tests@localhost/tests';
-    $container['db_conn_tests'] = function($container)
+    $dic['db_url_tests']  = 'mysql://tests:tests@localhost/tests';
+    $dic['db_conn_tests'] = function($dic)
     {
-      return ConnectionFactory::create($container['db_url_tests']);
+      return ConnectionFactory::create($dic['db_url_tests']);
     };
-    $container['user_repository'] = function($container)
+    $dic['user_repository'] = function($dic)
     {
-      return new UserRepository($container['db_conn_tests']);
+      return new UserRepository($dic['db_conn_tests']);
     };
   }
-  protected function registerRoutes($container)
+  protected function registerRoutes($dic)
   {
-    $router = $container['router'];
+    $router = $dic->get('router');
     
-    $this->get('/',function($request,$response) use ($container)
+    $router->map(['GET'],'/',function($request,$response) use ($dic)
     {
+      $routeName = $request->getAttribute('route_name');
+      
       ob_start();
-      require 'views/index.html.php';
+      require $request->getAttribute('template_name'); //'views/index.html.php';
       return $response->getBody()->write(ob_get_clean());
-    });
+      
+    })->setName('app_index')
+      ->add(new RequestAttributes([
+        'route_name' => 'app_index',
+        'template_name' => 'views/index.html.php'
+      ])
+    );
   }
 }
 $app = new App();

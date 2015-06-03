@@ -43,7 +43,24 @@ class App extends Slim\App
     $router = $container['router'];
     $cors   = $container['cors'];
     
-    $router->map(['GET','OPTIONS'],'/users',function($request,$response) use ($container)
+    $router->map(['GET','OPTIONS'],'/api/users/{id}',function($request,$response) use ($container)
+    {
+      $route = $request->getAttribute('_route');
+      
+      $userRepo = $container['user_repository'];
+      $userId = $request->getAttribute('id');
+      $user  = $userRepo->findOne($userId);
+      $user['_route_name'] = $route->getName(); //$request->getAttribute('_route_name');
+      $userx = json_encode($user);
+      
+      $response->getBody()->write($userx);
+      $response = $response->withHeader('Content-Type','application/json; charset=utf-8');
+      
+      return $response;      
+    },[
+      'template' => 'user.html.twig',
+    ])->setName('api_users_one'); //->add($cors);
+    $router->map(['GET','OPTIONS'],'/api/users',function($request,$response) use ($container)
     {
       $userRepo = $container['user_repository'];
       $users  = $userRepo->findAll();
