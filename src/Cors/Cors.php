@@ -34,9 +34,16 @@ class Cors
       ]);
       return new Response(200,$headers);
     }
+    // Add allow origin here in case something goes wrong downstream
+    $origin = $request->getHeaderLine('Origin');
+    if ($origin) {
+      $response = $response->withHeader('Access-Control-Allow-Origin',$origin);
+    }
     $response = $next($request,$response);
     
-    // Need origin for CORS
+    return $response;
+    
+    // Still not sure exactly where to add the header
     $origin = $request->getHeaderLine('Origin');
     if (!$origin) return $response;
     

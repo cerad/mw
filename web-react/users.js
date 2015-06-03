@@ -1,10 +1,13 @@
+console.log('users file loaded');
 (function(React) {
+  'use strict';
+  // Used for testing
   var users = [
     {"id":1,"userName":"ahundiak","dispName":"Art Hundiak",      "email":"ahundiak@example.com","roles":null},
     {"id":2,"userName":"bclinton","dispName":"Bill Clinton",     "email":"bclinton@example.com","roles":null},
     {"id":3,"userName":"hclinton","dispName":"Hillary Clinton",  "email":"hclinton@example.com","roles":null},
     {"id":4,"userName":"cclinton","dispName":"Chelse Clinton",   "email":"cclinton@example.com","roles":null},
-    {"id":5,"userName":"gomally", "dispName":"George O'Ma<br>ly","email":"gomally@example.com","roles":null}
+    {"id":5,"userName":"gomally", "dispName":"George O'Ma<br>ly","email":"gomally@example.com", "roles":null}
   ];
   var UserRow = React.createClass({
     render: function() {
@@ -49,10 +52,8 @@
     }
   });
   var QueryUserTable = React.createClass({
-    
     getInitialState: function() {
       return { users: [] };
-    //return { users: this.props.users };
     },
     componentDidMount: function() {
       var xhr = new XMLHttpRequest();

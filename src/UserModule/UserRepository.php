@@ -54,6 +54,17 @@ class UserRepository extends Repository
   {
     return $this->findBy([],$joins);   
   }
+  protected function getTableSelects($tableName,$tableAlias = null)
+  {
+    $selects = parent::getTableSelects($tableName,$tableAlias);
+    
+    foreach(['user.password AS user__password','user.salt AS user__salt'] as $col) {
+      if(($index = array_search($col, $selects)) !== false) {
+        unset($selects[$index]);
+      }
+    }
+    return $selects;
+  }
   /* ===========================================================
    * Generic
    * 'id' => value

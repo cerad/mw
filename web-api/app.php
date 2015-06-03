@@ -14,9 +14,13 @@ class App extends Slim\App
   {
     parent::__construct();
     
-    $this->registerServices($this->getContainer());
+    $container = $this->getContainer();
     
-    $this->registerRoutes($this->getContainer());
+    $this->registerServices($container);
+    
+    $this->registerRoutes($container);
+    
+    $this->add($container['cors']);
   }
   protected function registerServices($container)
   {
@@ -29,7 +33,7 @@ class App extends Slim\App
     {
       return new UserRepository($container['db_conn_tests']);
     };
-    $container['cors'] = function($container)
+    $container['cors'] = function()
     {
       return new Cors();
     };
@@ -39,7 +43,7 @@ class App extends Slim\App
     $router = $container['router'];
     $cors   = $container['cors'];
     
-    $this->get('/users',function($request,$response) use ($container)
+    $router->map(['GET','OPTIONS'],'/users',function($request,$response) use ($container)
     {
       $userRepo = $container['user_repository'];
       $users  = $userRepo->findAll();
@@ -49,7 +53,7 @@ class App extends Slim\App
       $response = $response->withHeader('Content-Type','application/json; charset=utf-8');
       
       return $response;      
-    })->add($cors);
+    }); //->add($cors);
   }
 }
 $app = new App();
