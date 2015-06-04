@@ -3,14 +3,15 @@
     <title>Index</title>
   </head>
   <body>
-    <h3>Index Page Route <?php echo $routeName; ?></h3>
+    <h3>Index Page Route</h3>
+    <a href="<?php echo $urlGenerator('app_users'); ?>">Users Page</a>
     <div id="users" style="display:none">USERS</div>
     <script>
       var app = {};
       
       app.loadUsers = function(success,error) {
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'http://localhost:8001/api/users', true);
+        xhr.open('GET', '/api/users', true);
         xhr.responseType = 'json';
         xhr.onload = function() {
           var status = xhr.status;
