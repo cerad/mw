@@ -10,6 +10,8 @@ use Cerad\Module\UserModule\UserRepository;
 use Cerad\Component\Cors\Cors;
 use Cerad\Middleware\RequestAttributes;
 
+use Cerad\Module\UserModule\Component\UserTable;
+
 class App extends Slim\App
 {
   public function __construct()
@@ -65,8 +67,16 @@ class App extends Slim\App
         'template_name' => 'views/index.html.php'
       ])
     );
-    $router->map(['GET'],'/users',function($request,$response) use ($urlGenerator)
+    $router->map(['GET'],'/users',function($request,$response) use ($dic,$urlGenerator)
     { 
+      $controller = $dic['user_api_controller'];
+      $responsex  = $dic['response'];
+      $responsex  = $controller->findAllAction($request,$responsex);
+      $bodyx = $responsex->getBody();
+      $bodyx->rewind();
+      $users = json_decode($bodyx->getContents(),true);
+      $userTable = new UserTable(['users' => $users]);
+
       ob_start();
       require $request->getAttribute('template_name'); //'views/index.html.php';
       return $response->getBody()->write(ob_get_clean());
@@ -95,16 +105,7 @@ class App extends Slim\App
     $router->map(['GET','OPTIONS'],'/api/users',function($request,$response) use ($dic)
     {
       $controller = $dic['user_api_controller'];
-      return $controller->findAllAction($request,$response);
-      
-      $userRepo = $dic['user_repository'];
-      $users  = $userRepo->findAll();
-      $usersx = json_encode($users);
-      
-      $response->getBody()->write($usersx);
-      $response = $response->withHeader('Content-Type','application/json; charset=utf-8');
-      
-      return $response;      
+      return $controller->findAllAction($request,$response);      
     })->setName('api_users');
     
     $router->map(['GET','OPTIONS'],'/api/users/{id}',function($request,$response) use ($dic)

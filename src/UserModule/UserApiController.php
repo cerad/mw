@@ -29,7 +29,7 @@ class UserApiController
     $qb->from  ('users','user');
     $items = $qb->execute()->fetchAll();
     
-    $prefix = $request->getUri()->getScheme() . '://' . $request->getUri()->getAuthority() . '/';
+    $prefix = $request->getUri()->getScheme() . '://' . $request->getUri()->getAuthority();
     foreach($items as &$item)
     {
       $item['links'][] = [

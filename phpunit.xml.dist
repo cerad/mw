@@ -9,8 +9,10 @@
 >
   <testsuites>
     <testsuite name="Middleware Test Suit">
+        <file>tests/ReactTest.php</file>
+        <!-- 
         <file>tests/CorsTest.php</file>
-        <file>tests/AppTest.php</file>
+        <file>tests/AppTest.php</file> -->
     </testsuite>
   </testsuites>
 </phpunit>

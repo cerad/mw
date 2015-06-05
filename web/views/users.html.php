@@ -15,6 +15,9 @@
   <body>
     <h3>React Testing</h3>
     <a href="<?php echo $urlGenerator('app_index'); ?>">Home Page</a>
+    <div id="static-table"><span>Static User Table</span>
+      <?php echo $userTable->renderToString() . "\n"; ?>
+    </div>
     <div id="users">Users Table</div>
     <div id="products">Product Table</div>
     
@@ -23,7 +26,7 @@
       var app = new CeradApp();
     </script>
     <script src="js/users.js"    type="text/javascript"></script>
-    <script src="js/products.js" type="text/jsx"></script>
+    <!-- <script src="js/products.js" type="text/jsx"></script> -->
     <script>
       (function(React,app) {
         app.getJson('/api',function(links) {
