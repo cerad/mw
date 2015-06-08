@@ -11,9 +11,15 @@
     "Cerad\\Component\\":  "src",
     "Cerad\\Middleware\\": "src"
   }},
+  "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/cerad/Slim"
+        }
+  ],
   "require": {
     "php": ">=5.4.0",
-    "slim/slim": "dev-develop",
+    "slim/slim": "dev-response_with_json",
     "doctrine/dbal": "^2.5",
     "cerad/dbal": "dev-master",
     "zendframework/zend-diactoros": "dev-develop"

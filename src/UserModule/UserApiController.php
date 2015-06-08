@@ -37,6 +37,7 @@ class UserApiController
         'href' => $prefix . $this->router->urlFor('api_users_one',['id' => $item['id']])
       ];
     }
+    return $response->withJson($items);
     
     $response->getBody()->write(json_encode($items));
     $response = $response->withHeader('Content-Type','application/json;charset=utf-8');
@@ -57,6 +58,8 @@ class UserApiController
       'rel'  => 'self',
       'href' => $this->router->urlFor('api_users_one',['id' => $item['id']])
     ];
+    return $response->withJson($item);
+    
     $response->getBody()->write(json_encode($item));
     $response = $response->withHeader('Content-Type','application/json;charset=utf-8');
     return $response;
