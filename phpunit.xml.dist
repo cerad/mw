@@ -9,10 +9,7 @@
 >
   <testsuites>
     <testsuite name="Middleware Test Suit">
-        <file>tests/ReactTest.php</file>
-        <!-- 
-        <file>tests/CorsTest.php</file>
-        <file>tests/AppTest.php</file> -->
+      <directory>./tests/</directory>
     </testsuite>
   </testsuites>
 </phpunit>

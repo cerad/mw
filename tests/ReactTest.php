@@ -30,7 +30,7 @@ class ReactTest extends \PHPUnit_Framework_TestCase
     $htmlx = '<tr><td>ahundiak</td><td>Art H</td></tr>';
     $this->assertEquals($htmlx,$element->render());
   }
-  public function testComponentTable()
+  public function sestComponentTable()
   {
     $table = new TestComponentTable([ 'users' => [
       ['user' => 'user1', 'name' => 'name1'],
