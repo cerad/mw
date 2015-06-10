@@ -11,9 +11,7 @@ use Psr\Http\Message\ServerRequestInterface as RequestInterface;
 use Zend\Diactoros\Response      as Response;
 use Zend\Diactoros\ServerRequest as Request;
 
-use Cerad\Component\Framework\App;
 use Cerad\Component\Framework\Router;
-use Cerad\Component\Framework\Container;
 
 class RouterTest extends \PHPUnit_Framework_TestCase
 {
@@ -65,51 +63,5 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     
     $result = $route['callable']($request,$response);
     $this->assertEquals(201,$result[1]->getStatusCode());
-  }
-  public function testContainer()
-  {
-    $dic = new Container();
-    
-    $this->assertFalse($dic->has('router'));
-    
-    $dic['router'] = function($dic)
-    {
-      return new Router();
-    };
-    $router = $dic->get('router');
-    
-    $this->assertTrue($router instanceof Router);
-    
-  //$this->assertInstanceOf('Router',$router);
-    
-  }
-  public function testApp()
-  {
-    $app = new App();
-    $dic = $app->getContainer();
-    
-    $router = $dic->get('router');
-    $this->assertTrue($router instanceof Router);
-    
-    $this->assertTrue($dic->get('request')  instanceof RequestInterface);
-    $this->assertTrue($dic->get('response') instanceof ResponseInterface);
-  }
-  public function testAppHandle()
-  {
-    $app = new App();
-    $dic = $app->getContainer();
-    
-    $router = $dic->get('router');
-    
-    $callable = function(RequestInterface $request, ResponseInterface $response)
-    {
-      return [$request,$response->withStatus(201)];
-    };
-    $router->addRoute('user_id','GET', '/user/{id:[0-9]+}',['model' => 'user'],$callable);
-
-    $request = new Request();
-    
-    $response = $app->handle($request);
-    $this->assertEquals(201,$response->getStatusCode());
   }
 }

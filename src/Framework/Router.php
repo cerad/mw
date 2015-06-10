@@ -25,7 +25,10 @@ class Router
    * @param string|callable $callable
    * @return array
    */
-  public function addRoute($name, $methods, $pattern, array $attrs = [], $callable = null)
+  public function addRoute($name, $methods, $pattern, array $attrs = [], 
+    $callable = null,
+    $middlewareBefore = [],
+    $middlewareAfter  = [])
   {
     $this->routes[$name] = $route = [
       'name'     => $name,
@@ -33,6 +36,8 @@ class Router
       'methods'  => $methods,
       'pattern'  => $pattern,
       'callable' => $callable,
+      'middlewareAfter'  => $middlewareAfter,
+      'middlewareBefore' => $middlewareBefore,
     ];
     $this->routeCollector->addRoute($methods,$pattern,$name);
     return $route;
