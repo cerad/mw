@@ -16,10 +16,20 @@ class Router
   {
     $this->routeCollector = new RouteCollector(new RouteParser(), new RouteDataGenerator());
   }
-  public function addRoute($name,$methods,$pattern,$callable = null)
+  /**
+   * 
+   * @param string          $name
+   * @param string|array    $methods
+   * @param string          $pattern
+   * @param array           $attrs
+   * @param string|callable $callable
+   * @return array
+   */
+  public function addRoute($name, $methods, $pattern, array $attrs = [], $callable = null)
   {
     $this->routes[$name] = $route = [
       'name'     => $name,
+      'attrs'    => $attrs,
       'methods'  => $methods,
       'pattern'  => $pattern,
       'callable' => $callable,
@@ -27,7 +37,7 @@ class Router
     $this->routeCollector->addRoute($methods,$pattern,$name);
     return $route;
   }
-  public function dispatch($method,$uri)
+  public function dispatch($method, $uri)
   {
     if ($this->routeDispatcher === null) {
       $this->routeDispatcher = new RouteDispatcher($this->routeCollector->getData());
@@ -37,10 +47,10 @@ class Router
     switch($routeInfo[0])
     {
       case RouteDispatcher::FOUND:
-        $name   = $routeInfo[1];
-        $params = $routeInfo[2];
-        $route  = $this->routes[$name];
-        $route['params'] = $params;
+        $name  = $routeInfo[1];
+        $vars  = $routeInfo[2];
+        $route = $this->routes[$name];
+        $route['vars'] = $vars;
         return $route;
     }
     // Toss invalid route exception?
