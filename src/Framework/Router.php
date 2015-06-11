@@ -22,22 +22,20 @@ class Router
    * @param string|array    $methods
    * @param string          $pattern
    * @param array           $attrs
-   * @param string|callable $callable
+   * @param array|callable $mws
    * @return array
    */
-  public function addRoute($name, $methods, $pattern, array $attrs = [], 
-    $callable = null,
-    $middlewareBefore = [],
-    $middlewareAfter  = [])
+  public function addRoute($name, $methods, $pattern, array $attrs = [], $mws = [])
   {
+    // Handy for testing
+    $mws = is_array($mws) ? $mws : [['priority' => 0, 'callable' => $mws]];
+        
     $this->routes[$name] = $route = [
       'name'     => $name,
       'attrs'    => $attrs,
       'methods'  => $methods,
       'pattern'  => $pattern,
-      'callable' => $callable,
-      'middlewareAfter'  => $middlewareAfter,
-      'middlewareBefore' => $middlewareBefore,
+      'mws'      => $mws,
     ];
     $this->routeCollector->addRoute($methods,$pattern,$name);
     return $route;
@@ -53,9 +51,8 @@ class Router
     {
       case RouteDispatcher::FOUND:
         $name  = $routeInfo[1];
-        $vars  = $routeInfo[2];
         $route = $this->routes[$name];
-        $route['vars'] = $vars;
+        $route['vars'] = $routeInfo[2];
         return $route;
     }
     // Toss invalid route exception?

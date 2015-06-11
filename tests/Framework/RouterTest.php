@@ -61,7 +61,7 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     $request  = new Request();
     $response = new Response();
     
-    $result = $route['callable']($request,$response);
+    $result = $route['mws'][0]['callable']($request,$response);
     $this->assertEquals(201,$result[1]->getStatusCode());
   }
 }

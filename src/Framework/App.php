@@ -11,6 +11,8 @@ class App
 {
   protected $dic;
   
+  protected $mws = [];
+  
   protected $middlewareAfter  = [];
   protected $middlewareBefore = [];
   
@@ -33,15 +35,40 @@ class App
   }
   public function getContainer() { return $this->dic; }
   
-  public function addMiddlewareBefore($mw)
+  public function addMiddleware($priority, $callable)
   {
-    $this->middlewareBefore[] = $mw;
+    $this->mws[] = ['priority' => $priority, 'callable' => $callable];
   }
-  public function addMiddlewareAfter($mw)
+  public function addMiddlewareBefore($callable, $priority = 255)
   {
-    $this->middlewareAfter[] = $mw;
+    $this->mws[] = ['priority' => $priority, 'callable' => $callable];
+    
+    $this->middlewareBefore[] = $callable;
+  }
+  public function addMiddlewareAfter($callable, $priority = -255)
+  {
+    $this->mws[] = ['priority' => $priority, 'callable' => $callable];
+    
+    $this->middlewareAfter[] = $callable;
   }
   protected function processMiddleware($mws,$request,$response)
+  {
+    usort($mws,function($mw1,$mw2) {
+      // intcmp hack
+      return $mw2['priority'] - $mw1['priority'];
+    });
+    
+    foreach($mws as $mw)
+    {
+      $callable = is_string($mw['callable']) ? $this->dic[$mw['callable']] : $mw['callable'];
+      
+      $results  = $callable($request,$response);
+      $request  = isset($results[0]) ? $results[0] : $request;
+      $response = isset($results[1]) ? $results[1] : $request;
+    }
+    return [$request,$response];
+  }
+  protected function processMiddlewarex($mws,$request,$response)
   {
     foreach($mws as $mw)
     {
@@ -55,47 +82,44 @@ class App
   }
   public function handle(RequestInterface $request)
   {
-    $dic = $this->dic;
-    
-    $router   = $dic->get('router');
-    $response = $dic->get('response');
+    $response = $this->dic->get('response');
     
     // TODO: Try catch around ll of this
-    // 
-    // Process app before
-    $results  = $this->processMiddleware($this->middlewareBefore,$request,$response);
-    $request  = $results[0];
-    $response = $results[1];
     
+    // TODO: Sort by priority?
+    // $mws = array_merge($this->middlewareBefore,[$this],$this->middlewareAfter);
+    $mws   = $this->mws;
+    $mws[] = ['priority' => 0, 'callable' => $this];
+    $results = $this->processMiddleware($mws,$request,$response);
+    
+    return $results[1];
+  }
+  /* ===============================================
+   * The app is also a callable bit of middleware that handles the route
+   * Might want to move to it's own class
+   */
+  public function __invoke(RequestInterface $request, ResponseInterface $response)
+  {
     // Match the route
-    $route = $router->dispatch('GET','/user/42');
+    $dic = $this->dic;
+    $router = $this->dic->get('router');
+    $route  = $router->dispatch($request->getMethod(),$request->getUri()->getPath());
     
     // Add in attributes
+    $attrs = array_replace(
+      $route['attrs'],
+      $route['vars'],[
+        '_route'     => $route['name'], // Stay compatible with S2
+        '_routeInfo' => $route,
+      ]
+    );
+    foreach ($attrs as $key => $value)
+    {
+      $request = $request->withAttribute($key,$value);
+    }
+    //$mws = array_merge($route['middlewareBefore'],[$route['callable']],$route['middlewareAfter']);
     
-    // Process route before
-    $results  = $this->processMiddleware($route['middlewareBefore'],$request,$response);
-    $request  = $results[0];
-    $response = $results[1];
-
-    // Process route
-    $callable = $route['callable'];
-    $callable = is_string($callable) ? $dic[$callable] : $callable;
+    return $this->processMiddleware($route['mws'],$request,$response);
     
-    $result = $callable($request,$response);
-    $request  = isset($results[0]) ? $results[0] : $request;
-    $response = isset($results[1]) ? $results[1] : $request;
-    
-    // Process route after
-    $results  = $this->processMiddleware($route['middlewareAfter'],$request,$response);
-    $request  = $results[0];
-    $response = $results[1];
-    
-    // Process app after
-    $results  = $this->processMiddleware($this->middlewareAfter,$request,$response);
-    $request  = $results[0];
-    $response = $results[1];
-
-    // Done
-    return $result[1];    
   }
 }
