@@ -1,5 +1,6 @@
 /vendor/
-/nbproject/private/
+/.idea/
+/nbproject/
 /composer.lock
 /node_modules/
 /phpunit.xml
