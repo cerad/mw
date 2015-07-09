@@ -9,15 +9,13 @@ abstract class Component2
   {
     $this->props = array_replace($this->props,$props);
   }
-  protected function escape($string)
-  {
-    return htmlspecialchars($string, ENT_COMPAT | ENT_HTML5, 'UTF-8');
-  }
   public function replaceProps(array $props = [])
   {
     $this->props = array_replace($this->props,$props);
   }
-  // returns one element object
+  protected function escape($string)
+  {
+    return htmlspecialchars($string, ENT_COMPAT | ENT_HTML5, 'UTF-8');
+  }
   abstract public function render();
-
 }

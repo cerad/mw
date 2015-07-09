@@ -3,12 +3,11 @@ namespace Cerad\Component\React;
 
 class TeamTableTestComponent extends Component2
 {
-  protected function renderRows()
+  protected function renderRows($teams)
   {
     $row  = new TeamRowTestComponent();
     $html = null;
-    foreach($this->props['teams'] as $team)
-    {
+    foreach($teams as $team) {
       $row->replaceProps(['team' => $team]);
       $html .= $row->render() . "\n";
     }
@@ -16,13 +15,20 @@ class TeamTableTestComponent extends Component2
   }
   public function render()
   {
+    $teams = $this->props['teams'];
+    usort($teams,function($team1,$team2) {
+      if ($team1['place'] < $team2['place']) return -1;
+      if ($team1['place'] > $team2['place']) return  1;
+      return 0;
+    });
     return <<<TYPEOTHER
 <table>
   <thead>
+    <tr><th colspan="5">{$this->escape($this->props['title'])}</th></tr>
     <tr><th>Place</th><th>Country</th><th>Name</th></tr>
   </thead>
   <tbody>
-{$this->renderRows()}
+{$this->renderRows($teams)}
   </tbody>
 </table>
 TYPEOTHER;

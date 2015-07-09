@@ -21,7 +21,11 @@ EOT;
   public function testTitleComponent()
   {
     $title = new TitleTestComponent(['title' => 'Buffy & Spike']);
-    $this->assertEquals('<title>Buffy &amp; Spike</title>',$title->render());
+
+    $expects = <<<TYPEOTHER
+<title>Buffy &amp; Spike</title>
+TYPEOTHER;
+    $this->assertEquals($expects,$title->render());
   }
   public function testPageComponent()
   {
@@ -77,18 +81,22 @@ TYPEOTHER;
       ['place' => '4th', 'country' => 'GER', 'name' => 'Germany'],
       ['place' => '3rd', 'country' => 'END', 'name' => 'England'],
     ];
-    $teamTable = new TeamTableTestComponent(['teams' => $teams]);
+    $teamTable = new TeamTableTestComponent([
+      'title' => "Women's World Cop 2015",
+      'teams' => $teams,
+    ]);
 
     $expect = <<<TYPEOTHER
 <table>
   <thead>
+    <tr><th colspan="5">Women's World Cop 2015</th></tr>
     <tr><th>Place</th><th>Country</th><th>Name</th></tr>
   </thead>
   <tbody>
 <tr><td>1st</td><td>USA</td><td>United States</td></tr>
 <tr><td>2nd</td><td>JAP</td><td>Japan</td></tr>
-<tr><td>4th</td><td>GER</td><td>Germany</td></tr>
 <tr><td>3rd</td><td>END</td><td>England</td></tr>
+<tr><td>4th</td><td>GER</td><td>Germany</td></tr>
 
   </tbody>
 </table>
